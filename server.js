@@ -1,21 +1,21 @@
-require('dotenv').config()
+const  http = require('http')
+const fs = require('fs')
+const { error } = require('console')
+const port = 4000
 
-const express = require('express')
-const app = express()
-const mongoose = require('mongoose')
+http.createServer(render).listen(port)
+console.log('Server started on port:' + port)
 
-mongoose.connect(process.env.DATABASE_URL)
-const db =mongoose.connection
-db.on('error ',(error) =>console.error(error))
-db.once('open',() => console.log('Connected to Database'))
-
-app.use(express.json())
-
-const subscriberRouter = require('./routes/subscribers')
-app.use('/subscribers', subscriberRouter)
-
-app.get("/",(req,res)=>{
-    res.send("Hello Node.js REST Server Done!");
-});
-
-app.listen(3000, () => console.log('Server Started'))
+function render(request,response){
+    let ctype = {'Content-type':'Text/html'}
+    fs.readFile('html/index.html',(error, content) =>{
+        if(!error){
+            response.writeHead(200,ctype)
+            response.write(content)
+        }else{
+            response.writeHead(404,ctype)
+            response.write(error.message)
+        }
+        return response.end()
+    })
+}
