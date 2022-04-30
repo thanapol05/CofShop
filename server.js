@@ -1,21 +1,11 @@
-const  http = require('http')
-const fs = require('fs')
-const { error } = require('console')
-const port = 4000
+const express = require('express')
+const app =express();
+app.use(express.static('public'))
+const port = 5000
 
-http.createServer(render).listen(port)
-console.log('Server started on port:' + port)
+app.get('/',(request,response)=>{
+    response.type('text/html')
+    response.send('<a href="index.html"></a>')
+})
 
-function render(request,response){
-    let ctype = {'Content-type':'Text/html'}
-    fs.readFile('html/index.html',(error, content) =>{
-        if(!error){
-            response.writeHead(200,ctype)
-            response.write(content)
-        }else{
-            response.writeHead(404,ctype)
-            response.write(error.message)
-        }
-        return response.end()
-    })
-}
+app.listen(port,() =>console.log('Server start on port : '+port))
